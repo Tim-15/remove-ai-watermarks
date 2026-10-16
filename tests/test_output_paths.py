@@ -13,8 +13,8 @@ class UniqueOutputPathTests(unittest.TestCase):
 
     def test_free_path_is_returned_unchanged(self):
         desired = self.root / "photo.png"
-        self.assertEqual(unique_output_path(desired), desired)
-        self.assertFalse(desired.exists())
+        assert unique_output_path(desired) == desired
+        assert not desired.exists()
 
     def test_existing_file_is_preserved(self):
         desired = self.root / "photo.png"
@@ -22,9 +22,9 @@ class UniqueOutputPathTests(unittest.TestCase):
 
         result = unique_output_path(desired)
 
-        self.assertEqual(result, self.root / "photo_1.png")
-        self.assertEqual(desired.read_bytes(), b"previous")
-        self.assertFalse(result.exists())
+        assert result == self.root / "photo_1.png"
+        assert desired.read_bytes() == b"previous"
+        assert not result.exists()
 
     def test_multiple_collisions_are_skipped(self):
         for name in ("photo.png", "photo_1.png", "photo_2.png"):
@@ -32,7 +32,7 @@ class UniqueOutputPathTests(unittest.TestCase):
 
         result = unique_output_path(self.root / "photo.png")
 
-        self.assertEqual(result, self.root / "photo_3.png")
+        assert result == self.root / "photo_3.png"
 
     def test_extension_is_preserved(self):
         desired = self.root / "clip.mp4"
@@ -40,7 +40,7 @@ class UniqueOutputPathTests(unittest.TestCase):
 
         result = unique_output_path(desired)
 
-        self.assertEqual(result.name, "clip_1.mp4")
+        assert result.name == "clip_1.mp4"
 
     def test_broken_symlink_is_a_collision(self):
         desired = self.root / "photo.png"
@@ -53,8 +53,8 @@ class UniqueOutputPathTests(unittest.TestCase):
 
         result = unique_output_path(desired)
 
-        self.assertEqual(result, self.root / "photo_1.png")
-        self.assertTrue(desired.is_symlink())
+        assert result == self.root / "photo_1.png"
+        assert desired.is_symlink()
 
 
 if __name__ == "__main__":
